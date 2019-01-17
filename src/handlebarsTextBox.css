@@ -1,0 +1,15 @@
+
+.handlebarsTextBox{
+    border: 1px solid black;
+    background-color: white;
+    caret-color: black;
+    padding: 5px;
+    margin: 5px;
+    overflow-x: auto;
+    
+}
+
+.handlebarsTextBox .public-DraftStyleDefault-block {
+    overflow-x: auto;
+    white-space: pre;
+  }
