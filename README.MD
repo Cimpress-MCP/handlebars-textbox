@@ -14,3 +14,13 @@ add the css dependencies
 ## Import
 
 `import { HandlebarsTextbox } from 'handlebars-textbox'`
+
+## Use
+
+```
+ 
+ <HandlebarsTextBox 
+    value={this.state.value} 
+    onChange={(value) => this.setState({value})} />
+
+ ```

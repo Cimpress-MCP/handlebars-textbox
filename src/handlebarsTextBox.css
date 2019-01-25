@@ -6,10 +6,15 @@
     padding: 5px;
     margin: 5px;
     overflow-x: auto;
-    
+    word-wrap: none;
+
 }
 
 .handlebarsTextBox .public-DraftStyleDefault-block {
     overflow-x: auto;
     white-space: pre;
-  }
+}
+
+.handlebarsTextBox .public-DraftStyleDefault-block::-webkit-scrollbar { 
+    display: none; 
+}
