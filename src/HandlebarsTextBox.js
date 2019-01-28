@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {EditorState, ContentState, convertToRaw, Modifier} from 'draft-js';
+import { registerCopySource } from "draftjs-conductor";
 import debounce from 'debounce';
 import Editor from 'draft-js-plugins-editor';
 import draftToHandlebars from './draftToHandlebars';
@@ -21,14 +22,21 @@ class HandlebarsTextBox extends Component {
     this._handlePaste = this._handlePaste.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    // const editorState = EditorState.createWithContent(ContentState.createFromText(nextProps.value))
-    // this.setState({editorState})
+  componentDidMount() {
+    if(this.editor && this.editor.getEditorRef() && this.editor.getEditorRef().editor){
+      this.copySource = registerCopySource(this.editor.getEditorRef())
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.copySource) {
+      this.copySource.unregister()
+    }
   }
 
   onChange() {
     const content = this.state.editorState.getCurrentContent();
-    const value = draftToHandlebars(convertToRaw(content));
+    const value = draftToHandlebars(content);
     this.props.onChange(value);
   }
 
@@ -50,7 +58,7 @@ class HandlebarsTextBox extends Component {
   }
 
   render() {
-    return <div className={`handlebarsTextBox ${this.props.className || ''}`}>
+    return <div className={`handlebarsTextBox ${this.props.className || ''}`} style={this.props.style || {}}>
       <Editor
         spellCheck
         ref={(b) => this.editor = b}
@@ -60,6 +68,7 @@ class HandlebarsTextBox extends Component {
         plugins={this.plugins}
         handleReturn={() => 'handled'}
         handlePastedText={this._handlePaste}
+        placeholder={this.props.placeholder}
       />
     </div>;
   }
@@ -69,6 +78,8 @@ HandlebarsTextBox.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   className: PropTypes.string,
+  style: PropTypes.object,
+  placeholder: PropTypes.string,
 };
 
 export default HandlebarsTextBox;

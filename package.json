@@ -29,6 +29,7 @@
     "draft-js": "^0.10.5",
     "draft-js-handlebars-plugin": "file:../draft-js-handlebars-plugin",
     "draft-js-plugins-editor": "^2.1.1",
+    "draftjs-conductor": "^0.4.1",
     "prop-types": "^15.6.2",
     "react": "^16.7.0"
   },
