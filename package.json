@@ -1,7 +1,7 @@
 {
   "name": "handlebars-textbox",
   "version": "0.0.1",
-  "description": "Powered textbox for editing handlebars code in a visual nice way",
+  "description": "Powered textbox for editing handlebars code in a visual nice way.",
   "main": "lib/index.js",
   "files": [
     "lib"
