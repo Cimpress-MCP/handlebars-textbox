@@ -1,27 +1,33 @@
 const renderBlock = (block, contentState) => {
   const blockText = block.getText()
-  let entities = {}
-  return block
-    .getCharacterList()
-    .reduce((text, c, i) => {
+  let currentEntity
+  let lastEntityEnd = 0
+  let res = ''
+
+  block
+    .findEntityRanges((c) => {
       const entityKey = c.getEntity();
       if (entityKey !== null && contentState.getEntity(entityKey).getType() === 'PLACEHOLDER') {
+        const entityData = contentState.getEntity(entityKey).data
+        let entityString = entityData.placeholder
 
-        if (!entities[entityKey]) {
-          entities[entityKey] = true
-          const entityData = contentState.getEntity(entityKey).data
-          let entityString = entityData.placeholder
-
-          if (entityData.subType === 'open') {
-            entityString = `#${entityString}`;
-          } else if (entityData.subType === 'close') {
-            entityString = `/${entityString}`;
-          }
-          return text + entityData.escapeHtml ? `{{${entityString}}}` : `{{{${entityString}}}}`;
+        if (entityData.subTypes.includes('open')) {
+          entityString = `#${entityString}`;
+        } else if (entityData.subTypes.includes('close')) {
+          entityString = `/${entityString}`;
         }
+        currentEntity = entityData.escapeHtml ? `{{${entityString}}}` : `{{{${entityString}}}}`;
+        return true
       }
-      return text + blockText[i];
+      return false
+    }, (start, end) => {
+      res += `${blockText.substring(lastEntityEnd, start)}${currentEntity}`
+      lastEntityEnd = end
     })
+
+  //Add rest of the text after last entity or none...
+  res += blockText.substring(lastEntityEnd, blockText.length);
+  return res
 };
 
 export default (contentState) => {
