@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {EditorState, ContentState, convertToRaw, Modifier} from 'draft-js';
-import { registerCopySource } from "draftjs-conductor";
+import {EditorState, ContentState, Modifier} from 'draft-js';
+import {registerCopySource, handleDraftEditorPastedText} from 'draftjs-conductor';
 import debounce from 'debounce';
 import Editor from 'draft-js-plugins-editor';
 import draftToHandlebars from './draftToHandlebars';
@@ -23,33 +23,38 @@ class HandlebarsTextBox extends Component {
   }
 
   componentDidMount() {
-    if(this.editor && this.editor.getEditorRef() && this.editor.getEditorRef().editor){
-      this.copySource = registerCopySource(this.editor.getEditorRef())
+    if (this.editor && this.editor.getEditorRef() && this.editor.getEditorRef().editor) {
+      this.copySource = registerCopySource(this.editor.getEditorRef());
     }
   }
 
   componentWillUnmount() {
     if (this.copySource) {
-      this.copySource.unregister()
+      this.copySource.unregister();
     }
   }
 
   onChange() {
-    const content = this.state.editorState.getCurrentContent();
+    const {editorState} = this.state;
+    const content = editorState.getCurrentContent();
     const value = draftToHandlebars(content);
     this.props.onChange(value);
   }
 
-  _handlePaste(text) {
-    this._handleChange(EditorState.push(
-        this.state.editorState,
-        Modifier.replaceText(
-            this.state.editorState.getCurrentContent(),
-            this.state.editorState.getSelection(),
-            text.replace(/\n/g, ' ')
-        )
-    ));
-
+  _handlePaste(text, html, editorState) {
+    if (html) {
+      // TODO Strip jump of lines in html
+      this._handleChange(handleDraftEditorPastedText(html, editorState));
+    } else {
+      this._handleChange(EditorState.push(
+          editorState,
+          Modifier.replaceText(
+              this.state.editorState.getCurrentContent(),
+              this.state.editorState.getSelection(),
+              text.replace(/\n/g, ' ')
+          )
+      ));
+    }
     return 'handled';
   }
 
