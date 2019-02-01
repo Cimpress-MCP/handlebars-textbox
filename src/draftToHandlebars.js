@@ -8,8 +8,7 @@ const renderBlock = (block, contentState) => {
       .findEntityRanges((c) => {
         const entityKey = c.getEntity();
         if (entityKey !== null && contentState.getEntity(entityKey).getType() === 'PLACEHOLDER') {
-          const entityData = contentState.getEntity(entityKey).data;
-          currentEntity = entityData.placeholder
+          currentEntity = contentState.getEntity(entityKey).data.placeholder;
           return true;
         }
         return false;
