@@ -9,14 +9,7 @@ const renderBlock = (block, contentState) => {
         const entityKey = c.getEntity();
         if (entityKey !== null && contentState.getEntity(entityKey).getType() === 'PLACEHOLDER') {
           const entityData = contentState.getEntity(entityKey).data;
-          let entityString = entityData.placeholder;
-
-          if (entityData.subTypes.includes('open')) {
-            entityString = `#${entityString}`;
-          } else if (entityData.subTypes.includes('close')) {
-            entityString = `/${entityString}`;
-          }
-          currentEntity = entityData.escapeHtml ? `{{${entityString}}}` : `{{{${entityString}}}}`;
+          currentEntity = entityData.placeholder
           return true;
         }
         return false;
