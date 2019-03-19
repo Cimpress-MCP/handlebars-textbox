@@ -44,17 +44,22 @@ class HandlebarsTextBox extends Component {
   _handlePaste(text, html, editorState) {
     if (html) {
       // TODO Strip jump of lines in html
-      this._handleChange(handleDraftEditorPastedText(html, editorState));
-    } else {
-      this._handleChange(EditorState.push(
-          editorState,
-          Modifier.replaceText(
-              this.state.editorState.getCurrentContent(),
-              this.state.editorState.getSelection(),
-              text.replace(/\n/g, ' ')
-          )
-      ));
+      const parsed = handleDraftEditorPastedText(html, editorState);
+      if (parsed) {
+        this._handleChange(parsed);
+        return 'handled';
+      }
     }
+
+    this._handleChange(EditorState.push(
+        editorState,
+        Modifier.replaceText(
+            this.state.editorState.getCurrentContent(),
+            this.state.editorState.getSelection(),
+            text.replace(/\n/g, ' ')
+        )
+    ));
+
     return 'handled';
   }
 
